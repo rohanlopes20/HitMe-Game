@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<style>
+	body
+	{
+		background: #8a58a1;
+	}
+	.header
+	{
+		background: none repeat scroll 0% 0% #00c2f2;
+		line-height: 30px; 
+		padding: 5px 10px; 
+		color: white; 
+		font-weight: 600; 
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size: 18px;
+		border-radius:10px;
+	}
+	.sc, .header
+	{
+		text-align: center;
+	}
+	table
+	{
+		width:300px;
+		border:1px solid black;
+		border-radius:10px;
+		margin: 0 auto;
+		padding: 5px;
+	}
+	td
+	{
+		border:1px solid black;
+		width: 30px;
+		height: 35px;
+		border-radius:5px;
+		background: #FFF;
+		padding: 3px;
+	}
+	.red
+	{
+		background: red;
+	}
+	.blue
+	{
+		background: blue;
+	}
+	.yellow
+	{
+		background: yellow;
+	}
+</style>
+<script>
+	var data = "<table>";
+	var count = 0;
+	var score = 0;
+
+	for (var i=0; i < 6; i++) {
+		data += "<tr>";
+		count ++;
+		for (var j=0; j < 6; j++) {
+			data += "<td onclick=\"hit('" +count +"'); \"data-src=\"" + count +"\"></td>";
+			count++;
+		}
+		data += "</tr>";
+	}
+	data += "</table>";
+	
+	function hit(id)
+	{
+		$("tr td").removeClass("red");
+		$("tr td[data-src=\"" + id + "\"]").addClass("red");  
+		
+		check(id);
+	}
+
+	function RandomTile(id) {
+		var d = Math.floor((Math.random() * 40) + 1);
+		$("tr td").removeClass("blue");
+		$("tr td").removeClass("yellow");
+		$("tr td").removeClass("red");
+		$("tr td[data-src=\"" + d + "\"]").addClass("blue");
+
+		setTimeout(RandomTile,1000);
+	}
+
+	function check(id) {
+		$("tr td").removeClass("yellow");
+		if(id == $(".blue").attr("data-src")) { 
+			score++;
+			$(".blue").addClass("yellow");
+			$("tr td").removeClass("red");
+			$(".score").html(score);
+		}
+	}
+	
+	setTimeout(RandomTile, 2000);
+
+	$(document).ready(function () {
+		$(".main").html(data);
+	});
+</script>
+</head>
+	<body>
+		<div class="header">
+			Hit Me Game
+		</div>
+		<br>
+		<div class="main">
+		</div>
+		<div class="sc">
+			<br>
+			Score : <span class="score">0</span>
+		</div>
+		<div class="tile">
+			<table>
+				<tr>
+					<td>6 * 6</td>
+					<td>3 * 3</td>
+					<td>9 * 9</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>
