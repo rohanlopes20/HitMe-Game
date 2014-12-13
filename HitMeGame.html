@@ -17,6 +17,8 @@
 		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 		font-size: 18px;
 		border-radius:10px;
+		width: 320px;
+		margin: 0 auto;
 	}
 	.sc, .header
 	{
@@ -24,66 +26,70 @@
 	}
 	table
 	{
-		width:300px;
+		width:340px;
 		border:1px solid black;
 		border-radius:10px;
 		margin: 0 auto;
 		padding: 5px;
+		border-collapse:collapse;
 	}
-	td
+	 td
 	{
 		border:1px solid black;
 		width: 30px;
 		height: 35px;
 		border-radius:5px;
 		background: #FFF;
-		padding: 3px;
+		padding: 5px;
+		box-shadow: 3px -3px 10px 5px rgb(34, 27, 27) inset;
 	}
+
+	body > div.tile > table > tbody > tr > td
+	{
+		box-shadow: none;
+	}
+
 	.red
 	{
 		background: red;
+		box-shadow: 0px 0px 0px red;
 	}
 	.blue
 	{
 		background: blue;
+		box-shadow: 0px 0px 0px blue;
 	}
 	.yellow
 	{
 		background: yellow;
+		box-shadow: 0px 0px 0px yellow;
 	}
+	.score
+	{
+		margin-right: 50px;
+	}
+
 </style>
 <script>
-	var data = "<table>";
-	var count = 0;
-	var score = 0;
+	var score 	= 0;
+	var speed 	= 2000; //2sec;
+	var n 		= 6;
+	var randomRange = 40;
 
-	for (var i=0; i < 6; i++) {
-		data += "<tr>";
-		count ++;
-		for (var j=0; j < 6; j++) {
-			data += "<td onclick=\"hit('" +count +"'); \"data-src=\"" + count +"\"></td>";
-			count++;
-		}
-		data += "</tr>";
-	}
-	data += "</table>";
-	
 	function hit(id)
 	{
 		$("tr td").removeClass("red");
 		$("tr td[data-src=\"" + id + "\"]").addClass("red");  
-		
 		check(id);
 	}
 
-	function RandomTile(id) {
-		var d = Math.floor((Math.random() * 40) + 1);
+	function RandomTile() {
+		var d = Math.floor((Math.random() * randomRange) + 1);
 		$("tr td").removeClass("blue");
 		$("tr td").removeClass("yellow");
 		$("tr td").removeClass("red");
 		$("tr td[data-src=\"" + d + "\"]").addClass("blue");
-
-		setTimeout(RandomTile,1000);
+		setTimeout(RandomTile, speed);
 	}
 
 	function check(id) {
@@ -94,13 +100,62 @@
 			$("tr td").removeClass("red");
 			$(".score").html(score);
 		}
+
+		switch(score) {
+			case 5:
+				speed = 1500;
+				$(".speed").html("1.5 sec");
+				break;
+			case 10:
+				speed = 1000;
+				$(".speed").html("1 sec");
+				break;
+			case 15:
+				speed = 500;
+				$(".speed").html("1/2 sec");
+				break;
+			default:
+				break;	
+		}
 	}
 	
-	setTimeout(RandomTile, 2000);
+	function grid(n) {
+		var count 	= 0;
+
+		switch(n) {
+			case '3':
+				randomRange = 10;
+				break;
+			case '6':
+				randomRange = 40;
+				break;
+			case '9':
+				randomRange = 89;
+				break;
+			default:
+				randomRange = 40;
+				break;	
+		}
+
+		var data 	= "<table>";
+		for (var i = 0; i < n; i++) {
+			data += "<tr>";
+			count ++;
+			for (var j=0; j < n; j++) {
+				data += "<td onclick=\"hit('" +count +"'); \"data-src=\"" + count +"\"></td>";
+				count++;
+			}
+			data += "</tr>";
+		}
+		data += "</table>";
+		$(".main").html(data);
+		setTimeout(RandomTile, 2000);
+	}
 
 	$(document).ready(function () {
-		$(".main").html(data);
+		grid(n);
 	});
+
 </script>
 </head>
 	<body>
@@ -113,13 +168,15 @@
 		<div class="sc">
 			<br>
 			Score : <span class="score">0</span>
+			Speed : <span class="speed">1sec</span>
 		</div>
 		<div class="tile">
 			<table>
 				<tr>
-					<td>6 * 6</td>
-					<td>3 * 3</td>
-					<td>9 * 9</td>
+					<td onclick="grid('3');">3 * 3</td>
+					<td onclick="grid('4');">4 * 4</td>
+					<td onclick="grid('5');">5 * 5</td>
+					<td onclick="grid('6');">6 * 6</td>
 				</tr>
 			</table>
 		</div>
